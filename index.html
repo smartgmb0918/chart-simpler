@@ -1,0 +1,74 @@
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Comatible" content="ie=edge">
+  <!-- Compiled and minified CSS -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css">
+  <title>Chart Simpler</title>
+  <style>
+    .container p {
+      margin-bottom: 60px;
+    }
+  </style>
+</head>
+<body class="blue">
+  <header class="blue darken-1 section">
+    <h2 class="center white-text">Chart Simpler</h2>
+  </header>
+  <div class="container section">
+    <p class="flow-text grey-text center text-lighten-2">Monthly money tracker for Chart...</p>
+    <div class="row">
+      <div class="col s12 m6">
+        <form class="card z-depth-0">
+          <div class="card-content">
+            <span class="card-title blue-text">Add Item:</span>
+            <div class="input-field">
+              <input type="text" id="name">
+              <label for="name">Item Name</label>
+            </div>
+            <div class="input-field">
+              <input type="text" id="cost">
+              <label for="name">Item Cost ($)</label>
+            </div>
+            <div class="input-field center">
+              <button class="btn-large pink white-text" type="submit">Add Item</button>
+            </div>
+            <div class="input-field center">
+              <p class="red-text" id="error"></p>
+            </div>
+          </div>
+        </form>
+      </div>
+      <div class="col s12 m6 push-m1">
+        <div class="canvas"></div>
+      </div>
+    </div>
+  </div>  
+
+  <!-- Compiled and minified JavaScript -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
+  <script src="https://d3js.org/d3.v5.min.js"></script>
+
+  <script src="https://www.gstatic.com/firebasejs/7.5.2/firebase-app.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/7.5.2/firebase-firestore.js"></script>
+  <script>
+    // Your web app's Firebase configuration
+    var firebaseConfig = {
+      apiKey: "AIzaSyD6RAHEr8w1DZX5l9j3plD1E5xcWR09OMU",
+      authDomain: "chart-simpler.firebaseapp.com",
+      databaseURL: "https://chart-simpler.firebaseio.com",
+      projectId: "chart-simpler",
+      storageBucket: "chart-simpler.appspot.com",
+      messagingSenderId: "891292205871",
+      appId: "1:891292205871:web:8797289bd50f87610c97da"
+    };
+    // Initialize Firebase
+    firebase.initializeApp(firebaseConfig);
+    const db = firebase.firestore();
+  </script>
+
+  <script src="index.js"></script>
+  <script src="graph.js"></script>
+</body>
+</html>
