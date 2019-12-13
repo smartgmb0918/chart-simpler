@@ -69,3 +69,27 @@ form1.addEventListener('submit', e => {
     error1.textContent = 'Please enter a valid distance';
   }
 });
+
+const content3 = document.querySelector('.content-3');
+const modal = content3.querySelector('.modal');
+M.Modal.init(modal);
+
+const form2 = content3.querySelector('form');
+const name2 = content3.querySelector('#name');
+const parent2 = content3.querySelector('#parent');
+const department2 = content3.querySelector('#department');
+
+form2.addEventListener('submit', e => {
+  e.preventDefault();
+
+  db.collection('employee').add({
+    name: name2.value,
+    parent: parent2.value,
+    department: department2.value
+  });
+
+  let instance = M.Modal.getInstance(modal);
+  instance.close();
+
+  form2.reset();
+})
