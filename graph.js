@@ -1,7 +1,7 @@
 const dims = { height: 300, width: 300, radius: 150 };
 const cent = { x: (dims.width / 2 + 5), y: (dims.height / 2 + 5) };
 
-const svg = d3.select('.canvas')
+const svg = d3.select('.canvas-0')
   .append('svg')
   .attr('width', dims.width + 150)
   .attr('height', dims.height + 150);
@@ -40,7 +40,7 @@ const tip = d3.tip()
 graph.call(tip);
 
 // update function
-const update = data => {
+const updateExpenses = data => {
   // update color scale domain
   color.domain(data.map(d => d.name));
 
@@ -85,33 +85,6 @@ const update = data => {
     })
     .on('click', handleClick);
 };
-
-// data array and firestore
-let data = [];
-
-db.collection('expenses').onSnapshot(res => {
-  res.docChanges().forEach(change => {
-    const doc = { ...change.doc.data(), id: change.doc.id };
-    
-    switch (change.type) {
-      case 'added':
-        data.push(doc);
-        break;
-      case 'modified':
-        const index = data.findIndex(item => item.id == doc.id);
-        data[index] = doc;
-        break;
-      case 'removed':
-        data = data.filter(item => item.id !== doc.id);
-        break;
-      default:
-        break;
-    }
-  });
-
-  update(data);
-
-});
 
 const arcTweenEnter = d => {
   const i = d3.interpolate(d.endAngle, d.startAngle);
@@ -160,3 +133,145 @@ const handleClick = (d) => {
   const id = d.data.id;
   db.collection('expenses').doc(id).delete();
 }
+
+// data array and firestore
+let dataExpenses = [];
+
+db.collection('expenses').onSnapshot(res => {
+  res.docChanges().forEach(change => {
+    const doc = { ...change.doc.data(), id: change.doc.id };
+    
+    switch (change.type) {
+      case 'added':
+        dataExpenses.push(doc);
+        break;
+      case 'modified':
+        const index = dataExpenses.findIndex(item => item.id == doc.id);
+        dataExpenses[index] = doc;
+        break;
+      case 'removed':
+        dataExpenses = dataExpenses.filter(item => item.id !== doc.id);
+        break;
+      default:
+        break;
+    }
+  });
+
+  updateExpenses(dataExpenses);
+});
+
+// For activities script
+const margin = { top: 40, right: 20, bottom: 50, left: 100 };
+const graphWidth = 500 - margin.left - margin.right;
+const graphHeight = 400 - margin.top - margin.bottom;
+
+const svg1 = d3.select('.canvas-1')
+  .append('svg')
+  .attr('width', graphWidth + margin.left + margin.right)
+  .attr('height', graphHeight + margin.top + margin.bottom);
+
+const graph1 = svg1.append('g')
+  .attr('width', graphWidth)
+  .attr('height', graphHeight)
+  .attr('transform', `translate(${margin.left}, ${margin.top})`);
+
+const xx = d3.scaleTime().range([0, graphWidth]);
+const yy = d3.scaleLinear().range([graphHeight, 0]);
+
+const xAxisGroup1 = graph1.append('g')
+  .attr('class', 'x-axis')
+  .attr('transform', `translate(0, ${graphHeight})`);
+
+const yAxisGroup1 = graph1.append('g')
+  .attr('class', 'y-axis');
+
+const line1 = d3.line()
+  .x(d => xx(new Date(d.date)))
+  .y(d => yy(d.distance));
+
+const path1 = graph1.append('path');
+
+const updateActivities = data => {
+  data = data.filter(item => item.activity == activity);
+  data.sort((a, b) => new Date(a.date) - new Date(b.date));
+
+  xx.domain(d3.extent(data, d => new Date(d.date)));
+  yy.domain([0, d3.max(data, d => d.distance)]);
+
+  path1.data([data])
+    .attr('fill', 'none')
+    .attr('stroke', '#00bfa5')
+    .attr('stroke-width', 2)
+    .attr('d', line1);
+
+  const circles = graph1.selectAll('circle')
+    .data(data);
+
+  circles.exit()
+    .remove();
+
+  circles
+    .attr('cx', d => xx(new Date(d.date)))
+    .attr('cy', d => yy(d.distance));
+
+  circles.enter()
+    .append('circle')
+      .attr('r', 4)
+      .attr('cx', d => xx(new Date(d.date)))
+      .attr('cy', d => yy(d.distance))
+      .attr('fill', '#ccc');
+
+  graph1.selectAll('circle')
+    .on('mouseover', (d, i, n) => {
+      d3.select(n[i])
+        .transition().duration(200)
+          .attr('r', 8)
+          .attr('fill', '#fff');
+    })
+    .on('mouseleave', (d, i, n) => {
+      d3.select(n[i])
+        .transition().duration(200)
+          .attr('r', 4)
+          .attr('fill', '#ccc');
+    })
+
+  const xAxis = d3.axisBottom(xx)
+    .ticks(4)
+    .tickFormat(d3.timeFormat('%b %d'));
+
+  const yAxis = d3.axisLeft(yy)
+    .ticks(4)
+    .tickFormat(d => d + 'm');
+
+  xAxisGroup1.call(xAxis);
+  yAxisGroup1.call(yAxis);
+
+  xAxisGroup1.selectAll('text')
+    .attr('transform', 'rotate(-40)')
+    .attr('text-anchor', 'end');
+};
+
+let dataActivities = [];
+
+db.collection('activities').onSnapshot(res => {
+  res.docChanges().forEach(change => {
+    const doc = { ...change.doc.data(), id: change.doc.id };
+    
+    switch (change.type) {
+      case 'added':
+        dataActivities.push(doc);
+        break;
+      case 'modified':
+        const index = dataActivities.findIndex(item => item.id == doc.id);
+        dataActivities[index] = doc;
+        break;
+      case 'removed':
+        dataActivities = dataActivities.filter(item => item.id !== doc.id);
+        break;
+      default:
+        break;
+    }
+  });
+
+  updateActivities(dataActivities);
+});
