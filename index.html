@@ -5,55 +5,69 @@
   <meta http-equiv="X-UA-Comatible" content="ie=edge">
   <!-- Compiled and minified CSS -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css">
+  <link rel="stylesheet" href="styles.css">
   <title>Chart Simpler</title>
-  <style>
-    .container p {
-      margin-bottom: 60px;
-    }
-    .tip {
-      padding: 10px;
-      background: #333;
-      color: #fff;
-    }
-    .tip .delete {
-      color: hotpink;
-      font-size: 0.8em;
-    }
-  </style>
 </head>
-<body class="blue">
+<body>
   <header class="blue darken-1 section">
     <h2 class="center white-text">Chart Simpler</h2>
   </header>
-  <div class="container section">
-    <p class="flow-text grey-text center text-lighten-2">Monthly money tracker for Chart...</p>
-    <div class="row">
-      <div class="col s12 m6">
-        <form class="card z-depth-0">
-          <div class="card-content">
-            <span class="card-title blue-text">Add Item:</span>
-            <div class="input-field">
-              <input type="text" id="name">
-              <label for="name">Item Name</label>
+  <div class="content-1 blue">
+    <div class="container section">
+      <p class="flow-text grey-text center text-lighten-2">Monthly money tracker for Chart...</p>
+      <div class="row">
+        <div class="col s12 m6">
+          <form class="card z-depth-0" id="form-0">
+            <div class="card-content">
+              <span class="card-title blue-text">Add Item:</span>
+              <div class="input-field">
+                <input type="text" id="name">
+                <label for="name">Item Name</label>
+              </div>
+              <div class="input-field">
+                <input type="text" id="cost">
+                <label for="name">Item Cost ($)</label>
+              </div>
+              <div class="input-field center">
+                <button class="btn-large blue white-text" type="submit">Add Item</button>
+              </div>
+              <div class="input-field center">
+                <p class="red-text" id="error-0"></p>
+              </div>
             </div>
-            <div class="input-field">
-              <input type="text" id="cost">
-              <label for="name">Item Cost ($)</label>
-            </div>
-            <div class="input-field center">
-              <button class="btn-large blue white-text" type="submit">Add Item</button>
-            </div>
-            <div class="input-field center">
-              <p class="red-text" id="error"></p>
-            </div>
-          </div>
-        </form>
-      </div>
-      <div class="col s12 m6 push-m1">
-        <div class="canvas"></div>
+          </form>
+        </div>
+        <div class="col s12 m6 push-m1">
+          <div class="canvas-0"></div>
+        </div>
       </div>
     </div>
-  </div>  
+  </div>
+
+  <div class="content-2 grey darken-4">
+    <div class="container section pt-3">
+      <p class="flow-text grey-text center text-lighten-2">A fitness tracker for Graph...</p>
+      <div class="row">
+        <div class="col s12 l5">
+          <button class="active" data-activity="cycling">Cycling</button>
+          <button data-activity="running">Running</button>
+          <button data-activity="swimming">Swimming</button>
+          <button data-activity="walking">Walking</button>
+        </div>
+        <div class="col s12 l6 push-l1">
+          <div class="canvas-1"></div>
+        </div>
+      </div>
+      <div class="row">
+        <form class="col md push-m3">
+          <p class="flow-text grey-text center">How much <span>cycling</span> have you done today</p>
+          <input type="text" class="grey-text" id="cycling" placeholder="Distance in m">
+          <p class="center pink-text error text-lighten-1">error</p>
+        </form>
+      </div>
+    </div>
+  </div>
+  
 
   <script src="https://www.gstatic.com/firebasejs/7.5.2/firebase-app.js"></script>
   <script src="https://www.gstatic.com/firebasejs/7.5.2/firebase-firestore.js"></script>

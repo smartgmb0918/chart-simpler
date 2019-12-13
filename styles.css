@@ -1,0 +1,52 @@
+header {
+  height: 150px;
+}
+.content-1 {
+  display: flex;
+  height: calc(100vh - 150px);
+}
+.container {
+  margin: auto;
+}
+.container p {
+  margin-bottom: 60px;
+}
+.tip {
+  padding: 10px;
+  background: #333;
+  color: #fff;
+}
+.tip .delete {
+  color: hotpink;
+  font-size: 0.8em;
+}
+.content-2 {
+  display: flex;
+  height: 100vh;
+}
+.content-2 button {
+  background: #333;
+  margin-bottom: 20px;
+  width: 100%;
+  padding: 16px;
+  font-size: 1.6em;
+  color: #fff;
+  border: 0;
+  border-radius: 4px;
+  cursor: pointer;
+}
+.content-2 button.active {
+  background: #00bfa5!important;
+}
+.content-2 form span {
+  color: #00bfa5!important;
+}
+.content-2 .x-axis path, .content-2 .y-axis path,
+.content-2 .x-axis line, .content-2 .y-axis line {
+  stroke: #ccc;
+}
+
+.content-2 .x-axis text, .content-2 .y-axis text {
+  fill: #ccc;
+  font-size: 14px;
+}
