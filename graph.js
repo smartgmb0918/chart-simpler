@@ -77,7 +77,7 @@ const updateExpenses = data => {
   graph.selectAll('path')
     .on('mouseover', (d, i, n) => {
       tip.show(d, n[i]);
-      handleMouseOver(d, n, i);
+      handleMouseOver(d, i, n);
     })
     .on('mouseout', (d, i, n) => {
       tip.hide();
@@ -191,6 +191,20 @@ const line1 = d3.line()
 
 const path1 = graph1.append('path');
 
+const dottedLines = graph1.append('g')
+  .attr('class', 'lines')
+  .style('opacity', 0);
+
+const xDottedLine = dottedLines.append('line')
+  .attr('stroke', '#aaa')
+  .attr('stroke-width', 1)
+  .attr('stroke-dasharray', 4);
+
+const yDottedLine = dottedLines.append('line')
+  .attr('stroke', '#aaa')
+  .attr('stroke-width', 1)
+  .attr('stroke-dasharray', 4);
+
 const updateActivities = data => {
   data = data.filter(item => item.activity == activity);
   data.sort((a, b) => new Date(a.date) - new Date(b.date));
@@ -227,12 +241,28 @@ const updateActivities = data => {
         .transition().duration(200)
           .attr('r', 8)
           .attr('fill', '#fff');
+      
+      xDottedLine
+        .attr('x1', xx(new Date(d.date)))
+        .attr('x2', xx(new Date(d.date)))
+        .attr('y1', graphHeight)
+        .attr('y2', yy(d.distance));
+
+      yDottedLine
+        .attr('x1', 0)
+        .attr('x2', xx(new Date(d.date)))
+        .attr('y1', yy(d.distance))
+        .attr('y2', yy(d.distance));
+
+      dottedLines.style('opacity', 1);
     })
     .on('mouseleave', (d, i, n) => {
       d3.select(n[i])
         .transition().duration(200)
           .attr('r', 4)
           .attr('fill', '#ccc');
+
+      dottedLines.style('opacity', 0);
     })
 
   const xAxis = d3.axisBottom(xx)
