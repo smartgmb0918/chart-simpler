@@ -305,3 +305,96 @@ db.collection('activities').onSnapshot(res => {
 
   updateActivities(dataActivities);
 });
+
+const dims2 = { height: 500, width: 1100 };
+const svg2 = d3.select('.canvas-2')
+  .append('svg')
+  .attr('width', dims2.width + 100)
+  .attr('height', dims2.height + 100);
+
+const graph2 = svg2.append('g')
+  .attr('transform', 'translate(50, 50)');
+
+// data strat
+const stratify = d3.stratify()
+  .id(d => d.name)
+  .parentId(d => d.parent);
+
+const tree = d3.tree()
+  .size([dims2.width, dims2.height]);
+
+const color2 = d3.scaleOrdinal(['#f4511e', '#e91e63', '#e53935', '#9c27b0']);
+
+const updateEmployees = data => {
+  graph2.selectAll('.node').remove();
+  graph2.selectAll('.link').remove();
+
+  color2.domain(data.map(item => item.department));
+
+  const rootNode = stratify(data);
+  
+  const treeData = tree(rootNode);
+
+  const nodes = graph2.selectAll('.node')
+    .data(treeData.descendants());
+
+  const links = graph2.selectAll('.link')
+    .data(treeData.links());
+
+  links.enter()
+    .append('path')
+    .attr('class', 'link')
+    .attr('fill', 'none')
+    .attr('stroke', '#aaa')
+    .attr('stroke-width', 2)
+    .attr('d', d3.linkVertical()
+      .x(d => d.x)
+      .y(d => d.y)
+    );
+
+  const enterNodes = nodes.enter()
+    .append('g')
+      .attr('class', 'node')
+      .attr('transform', d => `translate(${d.x}, ${d.y})`);
+
+  enterNodes.append('rect')
+    .attr('fill', d => color2(d.data.department))
+    .attr('stroke', '#555')
+    .attr('stroke-width', 2)
+    .attr('height', 50)
+    .attr('width', d => d.data.name.length * 20)
+    .attr('transform', d => {
+      let x = d.data.name.length * 10;
+      return `translate(${-x}, -25)`;
+    });
+
+  enterNodes.append('text')
+    .attr('text-anchor', 'middle')
+    .attr('fill', 'white')
+    .text(d => d.data.name);
+};
+
+let dataEmployees = [];
+
+db.collection('employee').onSnapshot(res => {
+  res.docChanges().forEach(change => {
+    const doc = {...change.doc.data(), id: change.doc.id};
+
+    switch (change.type) {
+      case 'added':
+        dataEmployees.push(doc);
+        break;
+      case 'modified':
+        const index = dataEmployees.findIndex(item => item.id == doc.id);
+        dataEmployees[index] = doc;
+        break;
+      case 'removed':
+        dataEmployees = dataEmployees.filter(item => item.id !== doc.id);
+        break;
+      default:
+        break;
+    }
+  });
+
+  updateEmployees(dataEmployees);
+})
